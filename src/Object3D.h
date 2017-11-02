@@ -3,9 +3,10 @@
 
 #include "Ray.h"
 #include "Material.h"
-
+#include <iostream>
 #include <string>
 
+using namespace std;
 class Object3D
 {
 public:
@@ -75,8 +76,7 @@ private:
     std::vector<Object3D*> m_members;
 };
 
-// TODO: Implement Plane representing an infinite plane
-// Choose your representation, add more fields and fill in the functions
+// Representation characterized by: Normal to plane, Point on plane (computed from offset)
 class Plane : public Object3D
 {
 public:
@@ -85,7 +85,9 @@ public:
     virtual bool intersect(const Ray &r, float tmin, Hit &h) const override;
 
 private:
-    // TOOD fill in members
+    Vector3f _normal;
+    Vector3f _point;
+    float _offset;
 };
 
 
@@ -112,6 +114,16 @@ public:
         _normals[2] = nc;
     }
 
+    const float areaFromPoints(Vector3f pA, Vector3f pB, Vector3f pC) const {
+            Vector3f AB = pB - pA;
+            Vector3f AC = pC - pA;
+            float cosTheta = Vector3f::dot(AB, AC) / ( AB.abs() * AC.abs() );
+            float sinTheta = sqrt(1.0f - pow(cosTheta, 2));
+            cout << "areaFromPoints()...\tcos: " << cosTheta << "\tsin: " << sinTheta << "\n";
+            cout << "Returning " << (0.5f * AB.abs() * AC.abs() * sinTheta) << "\n";
+            return 0.5f * AB.abs() * AC.abs() * sinTheta;
+    }
+    
     virtual bool intersect(const Ray &ray, float tmin, Hit &hit) const override;
 
     const Vector3f & getVertex(int index) const {
